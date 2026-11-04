@@ -15,6 +15,7 @@ class Student(Base):
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
     nfc_uid: Mapped[str] = mapped_column(String(32), unique=True, nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, server_default=text("'ACTIVE'"))
+    password: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
 class Item(Base):

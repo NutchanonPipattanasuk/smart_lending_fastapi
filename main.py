@@ -13,7 +13,7 @@ from schemas import (
     ItemCreate, ItemUpdate, ItemResponse,
     ItemCopyCreate, ItemCopyUpdate, ItemCopyResponse,
     AdminCreate, AdminUpdate, AdminResponse,
-    LoanCreate, LoanResponse, LoanItemResponse, ReturnRequest,
+    LoanCreate, LoanResponse, LoanItemResponse, ReturnRequest,StudentPasswordUpdate, StudentLogin
 )
 
 app = FastAPI(title="Smart Lending API - Simple")
@@ -480,3 +480,24 @@ def return_item(loan_item_id: str, data: ReturnRequest):
         session.commit()
         session.refresh(loan_item)
         return loan_item
+
+@app.put("/students/{student_id}/password", response_model=StudentResponse, tags=["students"])
+def set_student_password(student_id: str, data: StudentPasswordUpdate):
+    with Session(engine) as session:
+        student = session.get(Student, student_id)
+        if student is None:
+            raise HTTPException(status_code=404, detail="Student not found")
+
+        student.password = data.password
+        session.commit()
+        session.refresh(student)
+        return student
+
+
+@app.post("/student/login", response_model=StudentResponse, tags=["students"])
+def login_student(data: StudentLogin):
+    with Session(engine) as session:
+        student = session.get(Student, data.student_id)
+        if student is None or student.password != data.password:
+            raise HTTPException(status_code=401, detail="Invalid student ID or password")
+        return student

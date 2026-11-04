@@ -135,3 +135,11 @@ class ReturnRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     sensor_confirmed: StrictBool
+
+class StudentPasswordUpdate(BaseModel):
+    password: str = Field(min_length=1)
+
+
+class StudentLogin(BaseModel):
+    student_id: str = Field(min_length=1)
+    password: str = Field(min_length=1)
